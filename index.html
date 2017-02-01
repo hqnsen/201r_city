@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>City Finder</title>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+$(document).ready(function() {
+    //$( "#cityField" ).keyup(function() {
+        //$("#txtHint").text("Keyup "+$("#cityField").val());
+        //$("#txtHint").text("Keyup");
+        //alert( "Handler for .keyup() called." );
+    //});
+    //$( "#cityField" ).keyup(function() {
+        //$.getJSON("staticCity.txt",function(data) {
+            //console.log("Got "+data);
+            //console.log("Got "+data[0]);
+            //console.log("Got "+data[0].city);
+        //});
+        //$("#txtHint").text("Keyup "+$("#cityField").val());
+    //});
+    function toTitleCase(str) {
+        return str.replace(/(?:^|\s)\w/g, function(match) {
+            return match.toUpperCase();
+        });
+    }
+    $("#cityField").keyup(function() {
+        var field = $("#cityField").val();
+        var url = "http://bioresearch.byu.edu/cs260/jquery/getcity.cgi?q=" + toTitleCase(field);
+        $.getJSON(url, function(data) {
+            var everything;
+            everything = "<ul>";
+            $.each(data, function(i,item) {
+                everything += "<li> "+data[i].city;
+            });
+            everything += "</ul>";
+            $("#txtHint").html(everything);
+        })
+        .done(function() { console.log('getJSON request succeeded!'); })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            console.log('getJSON request failed! ' + textStatus);
+            console.log("incoming " + jqXHR.responseText);
+            console.log("URL was: " + url);
+        })
+        .always(function() { console.log('getJSON request ended!'); })
+        .complete(function() { console.log("complete"); });
+    });
+});
+</script>
+</head>
+<body>
+<form>
+Enter A Utah City: <input type="text" id="cityField" value=""><br>
+Suggestion: <span id="txtHint">Empty</span>
+<input id="weatherButton" type="submit" value="Submit">
+</form>
+<p>City</p>
+<textarea id="displayCity">No City</textarea>
+<p>Current Weather</p>
+<div id="weather">No weather</div>
+</body>
+</html>
